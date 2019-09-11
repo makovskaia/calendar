@@ -2,12 +2,14 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Calendar as BigCalendar, momentLocalizer, Views } from 'react-big-calendar'
+import { EventCell } from 'react-big-calendar/lib'
 import moment from 'moment'
 import { connect } from 'react-redux'
 import Event from './Event'
 import { addEvent, deleteEvent } from './actions/actions'
 import { validateEvent } from './utils/utils'
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
+import { randomColor } from './utils/utils'
 
 let allViews = Object.keys(Views).map(k => Views[k])
 const localizer = momentLocalizer(moment)
@@ -27,6 +29,7 @@ class Calendar extends React.Component {
     this.onSelectEvent = this.onSelectEvent.bind(this)
     this.onDelete = this.onDelete.bind(this)
     this.onMoveEvent = this.onMoveEvent.bind(this)
+    this.onChangeColor = this.onChangeColor.bind(this)
   }
   onSelectSlot(e) {
     this.setState({ anchor: e, tmpEvent: Object.assign(this.state.tmpEvent, { start: e.start, end: e.end })})
@@ -63,6 +66,13 @@ class Calendar extends React.Component {
       e.event.id)
   }
 
+  eventPropGetter(event, start, end, isSelected) {
+    return { style: { backgroundColor: event.color || '#3174ad' } }
+  }
+  onChangeColor() {
+    this.setState({ tmpEvent: {...this.state.tmpEvent, color: randomColor() } })
+  }
+
   render() {
     return (
       <div className="App" >
@@ -80,6 +90,7 @@ class Calendar extends React.Component {
             selectable
             onSelectEvent={this.onSelectEvent}
             onEventDrop={this.onMoveEvent}
+            eventPropGetter={this.eventPropGetter}
           />
           <Event
             event={this.state.tmpEvent}
@@ -90,6 +101,7 @@ class Calendar extends React.Component {
             onSave={this.onSave}
             onDelete={this.onDelete}
             onChange={this.onChange}
+            onChangeColor={this.onChangeColor}
           />
       </main>
       </div>

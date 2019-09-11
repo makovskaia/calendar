@@ -551,6 +551,12 @@ button.rbc-input::-moz-focus-inner {
   padding: 10px;
 }
 
+.modal-color-picker {
+  width: 20px!important;
+  height: 20px!important;
+  margin: 10px!important;
+}
+
 .modal button {
   all: unset;
   cursor: pointer;
@@ -579,3 +585,4 @@ button.rbc-input::-moz-focus-inner {
   top: 0;
   left: 0;
 }
+

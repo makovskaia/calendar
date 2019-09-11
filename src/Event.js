@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Event = ({ onX, onCancel, onSave, anchor, event, onChange, onDelete }) => anchor && anchor.box && event ? (
+const Event = ({ onX, onCancel, onSave, anchor, event, onChange, onDelete, onChangeColor }) => anchor && anchor.box && event ? (
   <div className="overlay" disabled>
     <div className="modal" style={{ top: anchor.box.clientY, left: anchor.box.clientX }}>
       <button className="modal-x" onClick={onCancel}>
@@ -11,6 +11,11 @@ const Event = ({ onX, onCancel, onSave, anchor, event, onChange, onDelete }) => 
         <label>Start<input type="text" name="start" value={event.start} onChange={onChange} /></label>
         <label>End<input type="text" name="end" value={event.end} onChange={onChange} /></label>
         <label>Notes<input type="text" name="notes" value={event.notes} onChange={onChange} /></label>
+        <button
+          style={{ backgroundColor: event.color || '#3174ad' }}
+          onClick={onChangeColor}
+          className="modal-color-picker"
+        />
       </div>
       <div className="modal-footer">
         <button className="modal-cancel" onClick={onDelete}>
