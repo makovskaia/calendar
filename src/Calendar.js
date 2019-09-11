@@ -52,7 +52,7 @@ class Calendar extends React.Component {
         <body className="App-body">
           <BigCalendar
             localizer={localizer}
-            events={[]}
+            events={Object.values(this.props.events)}
             startAccessor="start"
             endAccessor="end"
             views={allViews}
