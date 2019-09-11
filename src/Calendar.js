@@ -57,7 +57,7 @@ class Calendar extends React.Component {
   }
   onSelectEvent(obj, e) {
     e.persist()
-    const box = { clientX: e.screenX, clientY: e.screenY }
+    const box = { clientX: e.clientX, clientY: e.clientY }
     this.setState({ anchor: { box }, tmpEvent: obj })
   }
   onMoveEvent(e) {
@@ -77,7 +77,7 @@ class Calendar extends React.Component {
     return (
       <div className="App" >
         <header className="App-header">
-          calendar
+          <h1>Calendar</h1>
         </header>
         <main className="App-body">
           <DnDCalendar

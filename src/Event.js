@@ -7,7 +7,7 @@ const Event = ({ onX, onCancel, onSave, anchor, event, onChange, onDelete, onCha
         &times;
       </button>
       <div className="modal-body">
-        <label>Title<input type="text" name="title" value={event.title} onChange={onChange}  /></label>
+        <label>Title<input type="text" name="title" value={event.title} onChange={onChange} autoFocus /></label>
         <label>Start<input type="text" name="start" value={event.start} onChange={onChange} /></label>
         <label>End<input type="text" name="end" value={event.end} onChange={onChange} /></label>
         <label>Notes<input type="text" name="notes" value={event.notes} onChange={onChange} /></label>
@@ -28,7 +28,7 @@ const Event = ({ onX, onCancel, onSave, anchor, event, onChange, onDelete, onCha
     </div>
   </div>
 ) : (
-  <div>sowwy</div>
+  <div />
 )
 
 export default Event

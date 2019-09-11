@@ -9,13 +9,14 @@
 }
 */
 .App-body {
-  height: 100vh;
-
+  height: 70vh;
+  width: 70vw;
+  margin: auto;
 }
-/*
-.App-link {
-  color: #61dafb;
-}*/
+
+.App-header {
+  margin-left: 11%; 
+}
 
 @keyframes App-logo-spin {
   from {
@@ -44,6 +45,11 @@ button[disabled].rbc-btn {
 button.rbc-input::-moz-focus-inner {
   border: 0;
   padding: 0; }
+
+.App {
+  padding: 5%;
+  padding-top: 2%;
+}
 
 .rbc-calendar {
   box-sizing: border-box;
@@ -541,8 +547,10 @@ button.rbc-input::-moz-focus-inner {
 
 
 .modal {
-  width: 12vw;
+  width: 25vw;
+  max-width: 300px;
   height: 37vh;
+  max-height: 400px;
   position: absolute;
   background-color: #ffffff;
   z-index: 100;
@@ -550,6 +558,15 @@ button.rbc-input::-moz-focus-inner {
   border-radius: 10px;
   padding: 10px;
 }
+
+.modal-body input {
+  /*all: unset;*/
+/*  border: none;
+  padding: 1%;*/
+  margin-top: 2%;
+  border-bottom: 1px solid grey;
+}
+
 
 .modal-color-picker {
   width: 20px!important;
@@ -563,14 +580,13 @@ button.rbc-input::-moz-focus-inner {
 }
 .modal-x {
   float: right!important;
-
 }
 
 .modal-save {
   float: right!important;
 }
 .modal-body {
-  height: 32vh;
+  height: 34vh;
 }
 
 .modal input {
