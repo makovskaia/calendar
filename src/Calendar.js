@@ -5,7 +5,7 @@ import { Calendar as BigCalendar, momentLocalizer, Views } from 'react-big-calen
 import moment from 'moment'
 import { connect } from 'react-redux'
 import Event from './Event'
-import { addEvent } from './actions/actions'
+import { addEvent, deleteEvent } from './actions/actions'
 import { validateEvent } from './utils/utils'
 
 let allViews = Object.keys(Views).map(k => Views[k])
@@ -22,6 +22,8 @@ class Calendar extends React.Component {
     this.onCancel = this.onCancel.bind(this)
     this.onSave = this.onSave.bind(this)
     this.onChange = this.onChange.bind(this)
+    this.onSelectEvent = this.onSelectEvent.bind(this)
+    this.onDelete = this.onDelete.bind(this)
   }
   onSelectSlot(e) {
     this.setState({ anchor: e, tmpEvent: Object.assign(this.state.tmpEvent, { start: e.start, end: e.end })})
@@ -30,9 +32,13 @@ class Calendar extends React.Component {
   onCancel() {
     this.setState({ anchor: null, tmpEvent: {} })
   }
+  onDelete() {
+    this.state.tmpEvent.id && this.props.runDeleteEvent(this.state.tmpEvent.id)
+    this.setState({ anchor: null, tmpEvent: {} })
+  }
   onSave() {
     if(validateEvent(this.state.tmpEvent)) {
-      this.props.newEvent(this.state.tmpEvent)
+      this.props.runAddEvent(this.state.tmpEvent)
       this.setState({ anchor: null, tmpEvent: {} })
     } else {
       alert('sowwy')
@@ -42,6 +48,11 @@ class Calendar extends React.Component {
     let newState = this.state
     newState.tmpEvent[e.target.name] = e.target.value
     this.setState(newState)
+  }
+  onSelectEvent(obj, e) {
+    e.persist()
+    const box = { clientX: e.screenX, clientY: e.screenY }
+    this.setState({ anchor: { box }, tmpEvent: obj })
   }
   render() {
     return (
@@ -58,6 +69,7 @@ class Calendar extends React.Component {
             views={allViews}
             onSelectSlot={this.onSelectSlot}
             selectable
+            onSelectEvent={this.onSelectEvent}
           />
           <Event
             event={this.state.tmpEvent}
@@ -66,6 +78,7 @@ class Calendar extends React.Component {
             onX={this.onCancel}
             onCancel={this.onCancel}
             onSave={this.onSave}
+            onDelete={this.onDelete}
             onChange={this.onChange}
           />
       </body>
@@ -79,8 +92,11 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  newEvent: e => {
+  runAddEvent: e => {
     dispatch(addEvent(e))
+  },
+  runDeleteEvent: e => {
+    dispatch(deleteEvent(e))
   }
 })
 

@@ -1,6 +1,6 @@
-export const getId = obj => {
-  let keys = Object.keys(obj)
-  return +keys[keys.length - 1] + 1 || '0'
-}
+export const getId = e => e.title + e.start.toLocaleDateString() + e.end.toLocaleDateString()
 
-export const validateEvent = e => e.notes && e.notes.length <= 30 && e.title && e.title.length /* && smth abt availability*/
+export const validateEvent = e => !e.title || !e.title.length ? 'Event should have a title' :
+  !e.start || !e.end ? 'Event should have date and duration' :
+    e.notes && e.notes.length > 30 ? 'Description can not be longer than 30 characters' :
+      true
