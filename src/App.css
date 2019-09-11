@@ -540,3 +540,33 @@ button.rbc-input::-moz-focus-inner {
   pointer-events: none; }
 
 
+.modal {
+  width: 12vw;
+  height: 37vh;
+  position: absolute;
+  background-color: #ffffff;
+  z-index: 100;
+  box-shadow:1px 2px 10px #333333;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.modal button {
+  all: unset;
+  cursor: pointer;
+}
+.modal-x {
+  float: right!important;
+
+}
+
+.modal-save {
+  float: right!important;
+}
+.modal-body {
+  height: 32vh;
+}
+
+.modal input {
+  width: 90%;
+}
