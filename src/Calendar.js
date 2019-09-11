@@ -7,9 +7,11 @@ import { connect } from 'react-redux'
 import Event from './Event'
 import { addEvent, deleteEvent } from './actions/actions'
 import { validateEvent } from './utils/utils'
+import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 
 let allViews = Object.keys(Views).map(k => Views[k])
 const localizer = momentLocalizer(moment)
+const DnDCalendar = withDragAndDrop(BigCalendar);
 
 class Calendar extends React.Component {
   constructor(props) {
@@ -24,10 +26,10 @@ class Calendar extends React.Component {
     this.onChange = this.onChange.bind(this)
     this.onSelectEvent = this.onSelectEvent.bind(this)
     this.onDelete = this.onDelete.bind(this)
+    this.onMoveEvent = this.onMoveEvent.bind(this)
   }
   onSelectSlot(e) {
     this.setState({ anchor: e, tmpEvent: Object.assign(this.state.tmpEvent, { start: e.start, end: e.end })})
-    console.log(this.state)
   }
   onCancel() {
     this.setState({ anchor: null, tmpEvent: {} })
@@ -37,11 +39,12 @@ class Calendar extends React.Component {
     this.setState({ anchor: null, tmpEvent: {} })
   }
   onSave() {
-    if(validateEvent(this.state.tmpEvent)) {
+    const valid = validateEvent(this.state.tmpEvent)
+    if(valid === true) {
       this.props.runAddEvent(this.state.tmpEvent)
       this.setState({ anchor: null, tmpEvent: {} })
     } else {
-      alert('sowwy')
+      alert(valid)
     }
   }
   onChange(e) {
@@ -54,22 +57,29 @@ class Calendar extends React.Component {
     const box = { clientX: e.screenX, clientY: e.screenY }
     this.setState({ anchor: { box }, tmpEvent: obj })
   }
+  onMoveEvent(e) {
+    console.log({ ...e.event, id: undefined, start: e.start, end: e.end }, e.event.id)
+    this.props.runMoveEvent({ ...e.event, id: undefined, start: e.start, end: e.end },
+      e.event.id)
+  }
+
   render() {
     return (
-      <div className="App">
+      <div className="App" >
         <header className="App-header">
           calendar
         </header>
-        <body className="App-body">
-          <BigCalendar
+        <main className="App-body">
+          <DnDCalendar
             localizer={localizer}
-            events={Object.values(this.props.events)}
+            events={this.props.events}
             startAccessor="start"
             endAccessor="end"
             views={allViews}
             onSelectSlot={this.onSelectSlot}
             selectable
             onSelectEvent={this.onSelectEvent}
+            onEventDrop={this.onMoveEvent}
           />
           <Event
             event={this.state.tmpEvent}
@@ -81,14 +91,14 @@ class Calendar extends React.Component {
             onDelete={this.onDelete}
             onChange={this.onChange}
           />
-      </body>
+      </main>
       </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  events: state.events
+  events: Object.values(state.events)
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -97,6 +107,11 @@ const mapDispatchToProps = dispatch => ({
   },
   runDeleteEvent: e => {
     dispatch(deleteEvent(e))
+  },
+  runMoveEvent: (e, id) => {
+    let p = new Promise((res,rej) => res(dispatch(addEvent(e))))
+    return p.then(() => dispatch(deleteEvent(id)))
+    .catch(x => 'sowwy')
   }
 })
 

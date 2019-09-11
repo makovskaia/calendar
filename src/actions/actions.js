@@ -7,3 +7,4 @@ export const deleteEvent = id => ({
   type: 'DELETE_EVENT',
   id
 })
+

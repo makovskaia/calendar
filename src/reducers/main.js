@@ -8,7 +8,7 @@ const main = (state = initState, action) => {
   let newState = Object.assign({}, state)
   switch(action.type) {
     case 'ADD_EVENT':
-      const id = getId(action.event)
+      let id = getId(action.event)
       newState.events[id] = {...action.event, id }
     case 'DELETE_EVENT':
       let target = newState.events[action.id]
