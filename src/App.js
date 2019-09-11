@@ -1,30 +1,21 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import { Calendar, momentLocalizer, Views } from 'react-big-calendar'
-import moment from 'moment'
+import Calendar from './Calendar'
+import { createStore } from 'redux'
+import { Provider, connect } from 'react-redux'
+import main from './reducers/main'
 
-let allViews = Object.keys(Views).map(k => Views[k])
-
-const localizer = momentLocalizer(moment)
+const store = createStore(
+   main, /* preloadedState, */
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+ );
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        calendar
-      </header>
-      <body className="App-body">
-        <Calendar
-          localizer={localizer}
-          events={[]}
-          startAccessor="start"
-          endAccessor="end"
-          views={allViews}
-        />
-    </body>
-    </div>
+    <Provider store={store}>
+      <Calendar />
+    </Provider>
   );
 }
 
-export default App;
+export default App
