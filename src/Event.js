@@ -9,8 +9,8 @@ const Event = ({ onX, onCancel, onSave, anchor, event, onChange, onDelete, onCha
       </button>
       <div className="modal-body">
         <label>Title<input type="text" name="title" value={event.title} onChange={onChange} autoFocus  /></label>
-        <label>Start<input type="datetime-local" min={date(new Date())} name="start" value={date(event.start)} required onChange={onChange}  /></label>
-        <label>End<input type="datetime-local" min={date(event.start)}  name="end" value={date(event.end)} required onChange={onChange}  /></label>
+        <label>Start<input type="text" name="start" value={event.start} onChange={onChange} /></label>
+        <label>End<input type="text" name="end" value={event.end} onChange={onChange} /></label>
         <label>Notes<input type="text" name="notes" value={event.notes} onChange={onChange} rows="5" /></label>
         <button
           style={{ backgroundColor: event.color || '#3174ad' }}

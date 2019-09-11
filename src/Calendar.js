@@ -47,8 +47,11 @@ class Calendar extends React.Component {
     this.setState({ anchor: null, tmpEvent: {} })
   }
   onSave() {
-    const valid = validateEvent(this.state.tmpEvent)
+    const e = this.state.tmpEvent
+    const valid = validateEvent(e)
     if(valid === true) {
+      e.start = date(e.start)
+      e.end = date(e.end)  
       this.props.runAddEvent(this.state.tmpEvent)
       this.setState({ anchor: null, tmpEvent: {} })
     } else {
@@ -59,13 +62,13 @@ class Calendar extends React.Component {
     const name = e.target.name,
     val = e.target.value
     let newState = this.state
-    newState.tmpEvent[name] = name === 'start' || name === 'end' && new Date(val) != 'Invalid date' ? new Date(val) : val
+    newState.tmpEvent[name] = val
     this.setState(newState)
   }
   onSelectEvent(obj, e) {
     e.persist()
     const box = { clientX: e.screenX, clientY: e.screenY }
-    this.setState({ anchor: { box }, tmpEvent: obj })
+    this.setState({ anchor: { box }, tmpEvent: {...obj, start: date(obj.start), end: date(obj.end) } })
   }
   onMoveEvent(e) {
     this.props.runMoveEvent({ ...e.event, id: undefined, start: e.start, end: e.end },
