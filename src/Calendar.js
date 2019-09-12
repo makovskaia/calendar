@@ -48,11 +48,11 @@ class Calendar extends React.Component {
   }
   onSave() {
     const e = this.state.tmpEvent
+    e.start = date(e.start)
+    e.end = date(e.end) 
     const valid = validateEvent(e)
-    if(valid === true) {
-      e.start = date(e.start)
-      e.end = date(e.end)  
-      this.props.runAddEvent(this.state.tmpEvent)
+    if(valid === true) { 
+      this.props[!e.id ? 'runAddEvent' : 'moveEvent' ](e)
       this.setState({ anchor: null, tmpEvent: {} })
     } else {
       alert(valid)
@@ -71,7 +71,7 @@ class Calendar extends React.Component {
     this.setState({ anchor: { box }, tmpEvent: {...obj, start: date(obj.start), end: date(obj.end) } })
   }
   onMoveEvent(e) {
-    this.props.runMoveEvent({ ...e.event, id: undefined, start: e.start, end: e.end },
+    this.props.moveEvent({ ...e.event, start: e.start, end: e.end },
       e.event.id)
   }
 
@@ -129,10 +129,10 @@ const mapDispatchToProps = dispatch => ({
   runDeleteEvent: e => {
     dispatch(deleteEvent(e))
   },
-  runMoveEvent: (e, id) => {
-    let p = new Promise((res,rej) => res(dispatch(addEvent(e))))
-    return p.then(() => dispatch(deleteEvent(id)))
-    .catch(x => 'sowwy')
+  moveEvent: (e) => {
+    let p = new Promise((res,rej) => res(dispatch(deleteEvent(e.id))))
+    return p.then(() => dispatch(addEvent({...e, id: undefined })))
+    .catch(x => alert('Oops, smth went wrong'))
   }
 })
 
