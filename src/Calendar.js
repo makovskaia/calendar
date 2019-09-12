@@ -48,11 +48,9 @@ class Calendar extends React.Component {
   }
   onSave() {
     const e = this.state.tmpEvent
-    e.start = date(e.start)
-    e.end = date(e.end) 
     const valid = validateEvent(e)
     if(valid === true) { 
-      this.props[!e.id ? 'runAddEvent' : 'moveEvent' ](e)
+      this.props[!e.id ? 'runAddEvent' : 'moveEvent']({...e, start: new Date(e.start), end: new Date(e.end) })
       this.setState({ anchor: null, tmpEvent: {} })
     } else {
       alert(valid)
@@ -70,9 +68,8 @@ class Calendar extends React.Component {
     const box = { clientX: e.clientX, clientY: e.clientY }
     this.setState({ anchor: { box }, tmpEvent: {...obj, start: date(obj.start), end: date(obj.end) } })
   }
-  onMoveEvent(e) {
-    this.props.moveEvent({ ...e.event, start: e.start, end: e.end },
-      e.event.id)
+  onMoveEvent({ event, start, end, isAllDay: droppedOnAllDaySlot }) {
+    this.props.moveEvent({ ...event, start, end } )
   }
 
   eventPropGetter(event, start, end, isSelected) {
