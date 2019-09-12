@@ -2,14 +2,12 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Calendar as BigCalendar, momentLocalizer, Views } from 'react-big-calendar'
-import { EventCell } from 'react-big-calendar/lib'
 import moment from 'moment'
 import { connect } from 'react-redux'
 import Event from './Event'
 import { addEvent, deleteEvent } from './actions/actions'
-import { validateEvent } from './utils/utils'
+import { validateEvent, randomColor, date } from './utils/utils'
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
-import { randomColor } from './utils/utils'
 
 let allViews = Object.keys(Views).map(k => Views[k])
 const localizer = momentLocalizer(moment)
@@ -32,7 +30,14 @@ class Calendar extends React.Component {
     this.onChangeColor = this.onChangeColor.bind(this)
   }
   onSelectSlot(e) {
-    this.setState({ anchor: e, tmpEvent: Object.assign(this.state.tmpEvent, { start: e.start, end: e.end })})
+    this.setState({
+      anchor: e,
+      tmpEvent: {
+        ...this.state.tmpEvent,
+        start: date(e.start),
+        end: date(e.end)
+      }
+    })
   }
   onCancel() {
     this.setState({ anchor: null, tmpEvent: {} })
@@ -42,27 +47,31 @@ class Calendar extends React.Component {
     this.setState({ anchor: null, tmpEvent: {} })
   }
   onSave() {
-    const valid = validateEvent(this.state.tmpEvent)
-    if(valid === true) {
-      this.props.runAddEvent(this.state.tmpEvent)
+    const e = this.state.tmpEvent
+    e.start = date(e.start)
+    e.end = date(e.end) 
+    const valid = validateEvent(e)
+    if(valid === true) { 
+      this.props[!e.id ? 'runAddEvent' : 'moveEvent' ](e)
       this.setState({ anchor: null, tmpEvent: {} })
     } else {
       alert(valid)
     }
   }
   onChange(e) {
+    const name = e.target.name,
+    val = e.target.value
     let newState = this.state
-    newState.tmpEvent[e.target.name] = e.target.value
+    newState.tmpEvent[name] = val
     this.setState(newState)
   }
   onSelectEvent(obj, e) {
     e.persist()
     const box = { clientX: e.clientX, clientY: e.clientY }
-    this.setState({ anchor: { box }, tmpEvent: obj })
+    this.setState({ anchor: { box }, tmpEvent: {...obj, start: date(obj.start), end: date(obj.end) } })
   }
   onMoveEvent(e) {
-    console.log({ ...e.event, id: undefined, start: e.start, end: e.end }, e.event.id)
-    this.props.runMoveEvent({ ...e.event, id: undefined, start: e.start, end: e.end },
+    this.props.moveEvent({ ...e.event, start: e.start, end: e.end },
       e.event.id)
   }
 
@@ -120,10 +129,10 @@ const mapDispatchToProps = dispatch => ({
   runDeleteEvent: e => {
     dispatch(deleteEvent(e))
   },
-  runMoveEvent: (e, id) => {
-    let p = new Promise((res,rej) => res(dispatch(addEvent(e))))
-    return p.then(() => dispatch(deleteEvent(id)))
-    .catch(x => 'sowwy')
+  moveEvent: (e) => {
+    let p = new Promise((res,rej) => res(dispatch(deleteEvent(e.id))))
+    return p.then(() => dispatch(addEvent({...e, id: undefined })))
+    .catch(x => alert('Oops, smth went wrong'))
   }
 })
 
