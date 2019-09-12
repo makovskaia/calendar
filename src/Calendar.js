@@ -1,6 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 import { Calendar as BigCalendar, momentLocalizer, Views } from 'react-big-calendar'
 import moment from 'moment'
 import { connect } from 'react-redux'
@@ -18,7 +16,7 @@ class Calendar extends React.Component {
     super(props)
     this.state = {
       anchor: null,
-      tmpEvent: {}
+      tmpEvent: {},
     }
     this.onSelectSlot = this.onSelectSlot.bind(this)
     this.onCancel = this.onCancel.bind(this)
@@ -31,7 +29,7 @@ class Calendar extends React.Component {
   }
   onSelectSlot(e) {
     this.setState({
-      anchor: e,
+      anchor: { x: e.box.clientX, y: e.box.clientY  },
       tmpEvent: {
         ...this.state.tmpEvent,
         start: date(e.start),
@@ -44,29 +42,29 @@ class Calendar extends React.Component {
   }
   onDelete() {
     this.state.tmpEvent.id && this.props.runDeleteEvent(this.state.tmpEvent.id)
-    this.setState({ anchor: null, tmpEvent: {} })
+    this.onCancel()
   }
   onSave() {
     const e = this.state.tmpEvent
     const valid = validateEvent(e)
     if(valid === true) { 
       this.props[!e.id ? 'runAddEvent' : 'moveEvent']({...e, start: new Date(e.start), end: new Date(e.end) })
-      this.setState({ anchor: null, tmpEvent: {} })
+      this.onCancel()
     } else {
       alert(valid)
     }
   }
+
   onChange(e) {
-    const name = e.target.name,
-    val = e.target.value
     let newState = this.state
-    newState.tmpEvent[name] = val
+    newState.tmpEvent[e.target.name] = e.target.value
     this.setState(newState)
   }
+
   onSelectEvent(obj, e) {
     e.persist()
-    const box = { clientX: e.clientX, clientY: e.clientY }
-    this.setState({ anchor: { box }, tmpEvent: {...obj, start: date(obj.start), end: date(obj.end) } })
+    const anchor = { x: e.clientX, y: e.clientY }
+    this.setState({ anchor, tmpEvent: {...obj, start: date(obj.start), end: date(obj.end) } })
   }
   onMoveEvent({ event, start, end, isAllDay: droppedOnAllDaySlot }) {
     this.props.moveEvent({ ...event, start, end } )

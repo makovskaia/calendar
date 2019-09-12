@@ -8,7 +8,9 @@ export const validateEvent = e => !e.title || !e.title.length ? 'Event should ha
     e.notes && e.notes.length > 30 ? 'Description can not be longer than 30 characters' :
       !e.start.match(re).length || !e.end.match(re).length ? 'Dates should be in "YYYY-MM-DD, HH:MM" format'+e.start + '' + e.end :
         !e.notes ? 'Fill in notes' :
-        true
+          new Date(e.end) - new Date(e.start) <= 0 ? 'End date should be later than start date' :
+            new Date(e.start) - new Date() < 0 ? 'Start date can not be earlier than today' :
+                true
 export const randomColor = () => "#"+((1<<24)*Math.random()|0).toString(16)
 
 export const getId = e => e.title + date(e.start) + date(e.end)

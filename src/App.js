@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import Calendar from './Calendar'
 import { createStore } from 'redux'
-import { Provider, connect } from 'react-redux'
+import { Provider } from 'react-redux'
 import main from './reducers/main'
 
 const store = createStore(
